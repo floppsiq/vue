@@ -2,8 +2,12 @@
   <div class="wrapper">
     <button class="btn btn__show" @click="showForm">ADD NEW COST</button>
     <div v-if="clicked" class="form">
-    <input placeholder="Payment amount" v-model="value" />
-    <input placeholder="Payment description" v-model="category" />
+    <input placeholder="Payment amount" v-model.number="value" />
+    <div class="select">
+      <select v-model="category">
+        <option v-for="(option, idx) in options" :key="idx">{{ option }}</option>
+      </select>
+    </div>
     <input placeholder="Payment date" v-model="date" />
     <button class="btn btn__save" @click="onSaveClick">ADD</button>
     </div>
@@ -15,7 +19,7 @@ export default {
   name: "AddPaymentForm",
   data() {
     return {
-      value: "",
+      value: 0,
       category: "",
       date: "",
       clicked: false,
@@ -29,20 +33,30 @@ export default {
       const y = today.getFullYear();
       return `${d}.${m}.${y}`;
     },
+    options(){
+      return this.$store.getters.getCategoryList
+    }
   },
   methods: {
     onSaveClick() {
       const data = {
         id: Date.now(),
-        value: +this.value,
+        value: this.value,
         category: this.category,
         date: this.date || this.getCurrentDate,
       };
       this.$emit('addPayment', data)
+      this.$store.commit('addDataToPaymentsList', data)
     },
     showForm(){
       this.clicked=!this.clicked;
     },
+  },
+  async created() {
+    if(!this.options.length) {
+      await this.$store.dispatch('loadCategories')
+    }
+    this.category = this.options[0]
   },
 };
 </script>

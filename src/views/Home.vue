@@ -4,34 +4,62 @@
       <div class="title">My personal costs</div>
     </header>
     <main>
-      <add-payment-form @addPayment="add"/>
-      <payments-display :items="paymentsList" />
+      TOTAL: {{ getFullPaymentValue }}
+      <add-payment-form @addPayment="add" />
+      <payments-display :items="currentElement" />
+      <pagination :length="12" :cur="curPage" :n="3" @paginate="onChangePage"/>
     </main>
   </div>
 </template>
 
 <script>
-import AddPaymentForm from '../components/AddPaymentForm.vue';
+import AddPaymentForm from "../components/AddPaymentForm.vue";
 import PaymentsDisplay from "../components/PaymentsDisplay.vue";
+import Pagination from "../components/Pagination.vue";
 // @ is an alias to /src
+import { mapMutations, mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Home",
   components: {
     PaymentsDisplay,
     AddPaymentForm,
+    Pagination,
   },
   data() {
     return {
       show: false,
-      paymentsList: [],
+      curPage: 1,
+      n: 10,
     };
   },
-  methods: {
-    add(data){
-      this.paymentsList = [...this.paymentsList, data]
+  computed: {
+    ...mapGetters([
+      'getFullPaymentValue'
+    ]),
+    paymentsList() {
+      return this.$store.getters.getPaymentList;
     },
-    fetchData() {
+    currentElement(){
+      return this. paymentsList.slice(3 * (this.curPage - 1), 3 * (this.curPage - 1) + 3)
+    },
+  },
+
+  methods: {
+    ...mapMutations({
+      myMuttation: 'setPaymentsListData'
+    }),
+    ...mapActions([
+      'fetchData'
+    ]),
+    onChangePage(page){
+      this.curPage = page
+      this.fetchData(page)
+    },
+    add(data){
+      this.$store.commit('addDataToPaymentsList', data)
+    },  
+    /* fetchData() {
       return [
         {
           id: "1",
@@ -69,14 +97,10 @@ export default {
           category: "Healthcare",
           value: 5000,
         },
-      ];
-    },
-    toggleButton() {
-
-    }
-  },
+      ]; */
+    }, 
   created() {
-    this.paymentsList = this.fetchData();
+    this.fetchData(this.curPage)
   },
 };
 </script>
