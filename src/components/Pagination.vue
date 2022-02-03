@@ -16,7 +16,7 @@ export default {
     },
     computed: {
         amount() {
-            return Math.ceil(this.length / 3)
+            return Math.ceil(this.length / this.n)
         }
     },
     methods: {
@@ -35,6 +35,10 @@ export default {
     display: flex;
     & > div {
         padding: 10px;
+        &:hover {
+            background: darken($color: #ccc, $amount: 2);
+            cursor: pointer;
+        }
         &.active {
             background: #ccc;
         }

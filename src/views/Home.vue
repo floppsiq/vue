@@ -7,7 +7,12 @@
       TOTAL: {{ getFullPaymentValue }}
       <add-payment-form @addPayment="add" />
       <payments-display :items="currentElement" />
-      <pagination :length="12" :cur="curPage" :n="3" @paginate="onChangePage"/>
+      <pagination
+        :length="paymentsList.length"
+        :cur="curPage"
+        :n="n"
+        @paginate="onChangePage"
+      />
     </main>
   </div>
 </template>
@@ -34,73 +39,33 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'getFullPaymentValue'
-    ]),
+    ...mapGetters(["getFullPaymentValue"]),
     paymentsList() {
       return this.$store.getters.getPaymentList;
     },
-    currentElement(){
-      return this. paymentsList.slice(3 * (this.curPage - 1), 3 * (this.curPage - 1) + 3)
+    currentElement() {
+      return this.paymentsList.slice(this.n * (this.curPage - 1), this.n * (this.curPage - 1) + this.n);
     },
   },
 
   methods: {
     ...mapMutations({
-      myMuttation: 'setPaymentsListData'
+      myMuttation: "setPaymentsListData",
     }),
-    ...mapActions([
-      'fetchData'
-    ]),
-    onChangePage(page){
-      this.curPage = page
-      this.fetchData(page)
+    ...mapActions(["fetchData"]),
+    onChangePage(page) {
+      this.curPage = page;
     },
-    add(data){
-      this.$store.commit('addDataToPaymentsList', data)
-    },  
-    /* fetchData() {
-      return [
-        {
-          id: "1",
-          date: "28.03.2020",
-          category: "Food",
-          value: 169,
-        },
-        {
-          id: "2",
-          date: "24.03.2020",
-          category: "Transport",
-          value: 360,
-        },
-        {
-          id: "4",
-          date: "24.03.2020",
-          category: "Food",
-          value: 532,
-        },
-        {
-          id: "5",
-          date: "24.03.2020",
-          category: "Housing",
-          value: 1235,
-        },
-        {
-          id: "6",
-          date: "06.07.2020",
-          category: "Clothing",
-          value: 2000,
-        },
-        {
-          id: "7",
-          date: "27.05.2020",
-          category: "Healthcare",
-          value: 5000,
-        },
-      ]; */
-    }, 
+    add(data) {
+      this.$store.commit("addDataToPaymentsList", data);
+    },
+  },
   created() {
-    this.fetchData(this.curPage)
+    const { page } = this.$route.params;
+    if (page) {
+      this.curPage = Number(page);
+    }
+    this.fetchData()
   },
 };
 </script>

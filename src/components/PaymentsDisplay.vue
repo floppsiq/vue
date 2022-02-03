@@ -1,16 +1,16 @@
 <template>
-  <div class="wrapper">
-    <div class="header">
-      <div class="header__item">#</div>
-      <div class="header__item">Data</div>
-      <div class="header__item">Category</div>
-      <div class="header__item">Value</div>
+  <div class="payment__table">
+    <div class="payment__header">
+      <div class="payment__header-item">#</div>
+      <div class="payment__header-item">Data</div>
+      <div class="payment__header-item">Category</div>
+      <div class="payment__header-item">Value</div>
     </div>
-    <div class="row" v-for="item in items" :key="item.id">
-      <div class="row__item">{{ item.id }}</div>
-      <div class="row__item">{{ item.value }}</div>
-      <div class="row__item">{{ item.category }}</div>
-      <div class="row__item">{{ item.date }}</div>
+    <div class="payment__row" v-for="item in items" :key="item.id">
+      <div class="payment__row-item">{{ item.id }}</div>
+      <div class="payment__row-item">{{ item.value }}</div>
+      <div class="payment__row-item">{{ item.category }}</div>
+      <div class="payment__row-item">{{ item.date }}</div>
     </div>
   </div>
 </template>
@@ -28,22 +28,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header {
+.payment__header {
   display: flex;
   justify-content: space-between;  
-  border-bottom: 1px solid lightgray;
+  border-bottom: 2px solid black;
   padding: 10px 0;
-  &__item {
+  &-item {
     font-weight: bold;
     width: 25%;
   }
 }
-.row {
+.payment__row {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid lightgray;
   padding: 10px 0;
-  &__item {
+  &-item {
     width: 25%;
   }
 }
